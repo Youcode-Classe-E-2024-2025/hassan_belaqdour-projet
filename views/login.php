@@ -47,7 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -68,29 +67,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <span>Don't have an account? <a href="signup.php">Sign Up</a></span>
                     <header>Login</header>
                 </div>
-                <div class="input-box">
-                    <input type="text" class="input-field" placeholder="Username or Email">
-                    <i class="bx bx-user"></i>
+                <form action="" method="POST">
+    <div class="input-box">
+        <input type="text" name="email" class="input-field" placeholder="Username or Email" required>
+        <i class="bx bx-user"></i>
+    </div>
+    <div class="input-box">
+        <input type="password" name="password" class="input-field" placeholder="Password" required>
+        <i class="bx bx-lock-alt"></i>
+    </div>
+    <div class="input-box">
+        <input type="submit" class="submit" value="Login">
+    </div>
+</form>
                 </div>
-                <div class="input-box">
-                    <input type="password" class="input-field" placeholder="Password">
-                    <i class="bx bx-lock-alt"></i>
-                </div>
-                <div class="input-box">
-                    <input type="submit" class="submit" value="Login">
-                </div>
-                <div class="two-col">
-                    <div class="one">
-                        <input type="checkbox" id="login-check">
-                        <label for="login-check"> Remember Me</label>
-                    </div>
-                    <div class="two">
-                        <label><a href="#">Forgot password?</a></label>
-                    </div>
-                </div>
-            </div>
-</div>
-</div>
-</body>
+           </div>
+           </div>
+   </body>
 
 </html>
