@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
 
-        if (password_verify($password, $user['password'])) {
+        if (password_verify($password, $user['password_hash'])) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['email'] = $user['email'];
             $_SESSION['role'] = $user['role'];
@@ -39,13 +39,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 exit();
             }
         } else {
-            $error = "Mot de passe incorrect.";
+            $error = "code non correct";
         }
     } else {
-        $error = "email n'exist pas donne la base de donnes.";
+        $error = "l'email n'exist pas a la base de donnes";
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Location: login.php");
                 exit();
             } else {
-                $error_message = "Un problème est survenu lors de l'inscription.";
+                $error_message = "probleme de connection";
             }
         }
     }
