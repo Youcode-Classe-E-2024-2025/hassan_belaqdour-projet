@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 header("Location: dashboard.php");
                 exit();
             } else {
-                header("Location: member.php");
+                header("Location: member_dashboard.php");
                 exit();
             }
         } else {
