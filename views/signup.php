@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user) {
-            $error_message = "Cet email ou nom d'utilisateur est déjà enregistré.";
+            $error_message = "cet emai exist deja !!!!!";
         } else {
             $stmt = $conn->prepare("INSERT INTO users (username, email, password_hash) 
                                     VALUES (:username, :email, :password)");

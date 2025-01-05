@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['email'] = $user['email'];
             $_SESSION['role'] = $user['role'];
 
-            if ($user['role'] == 'admin') {
+            if ($user['role'] == 'Chef') {
                 header("Location: dashboard.php");
                 exit();
             } else {

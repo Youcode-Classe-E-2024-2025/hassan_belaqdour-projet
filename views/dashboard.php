@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="../style/dashboard.css">
 </head>
 <body>
-    <!-- Sidebar -->
     <div class="sidebar">
         <h2>FinDash</h2>
         <ul>
@@ -21,11 +20,9 @@
         </ul>
     </div>
 
-    <!-- Main Dashboard Content -->
     <div class="main-content">
         <h1>Dashboard</h1>
 
-        <!-- Card Section -->
         <div class="cards">
             <div class="card">
                 <p>Total Balance</p>
@@ -44,7 +41,6 @@
             </div>
         </div>
 
-        <!-- Graph Section -->
         <div class="graph-container">
             <canvas id="myChart"></canvas>
         </div>
