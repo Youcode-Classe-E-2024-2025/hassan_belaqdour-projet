@@ -68,19 +68,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <span>Don't have an account? <a href="signup.php">Sign Up</a></span>
                     <header>Login</header>
                 </div>
-                <form action="" method="POST">
-    <div class="input-box">
-        <input type="text" name="email" class="input-field" placeholder="Username or Email" required>
-        <i class="bx bx-user"></i>
-    </div>
-    <div class="input-box">
-        <input type="password" name="password" class="input-field" placeholder="Password" required>
-        <i class="bx bx-lock-alt"></i>
-    </div>
-    <div class="input-box">
-        <input type="submit" class="submit" value="Login">
-    </div>
-</form>
+                 <form action="" method="POST">
+                    <div class="input-box">
+                        <input type="text" name="email" class="input-field" placeholder="Username or Email" required>
+                        <i class="bx bx-user"></i>
+                    </div>
+                    <div class="input-box">
+                        <input type="password" name="password" class="input-field" placeholder="Password" required>
+                        <i class="bx bx-lock-alt"></i>
+                    </div>
+                    <div class="input-box">
+                        <input type="submit" class="submit" value="Login">
+                    </div>
+                </form>
                 </div>
            </div>
            </div>
