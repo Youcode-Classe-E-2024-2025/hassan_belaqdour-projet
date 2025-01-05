@@ -4,7 +4,7 @@ session_start();
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "securite";
+$dbname = "gestion_projet";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {

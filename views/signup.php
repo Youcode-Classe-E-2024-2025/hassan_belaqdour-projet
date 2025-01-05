@@ -2,7 +2,7 @@
 session_start();
 
 $host = 'localhost';
-$dbname = 'securite';
+$dbname = 'gestion_projet';
 $username = 'root';
 $password = '';
 
@@ -14,9 +14,7 @@ try {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $first_name = $_POST['first_name'];
-    $last_name = $_POST['last_name'];
-    $phone_number = $_POST['phone_number'];
+    $username = $_POST['username'];
     $email = $_POST['email'];
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
@@ -26,39 +24,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-        $stmt = $conn->prepare("SELECT * FROM users WHERE email = :email");
+        $stmt = $conn->prepare("SELECT * FROM users WHERE email = :email OR username = :username");
         $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':username', $username);
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user) {
-            $error_message = "Cet email est deja enregistrer.";
+            $error_message = "Cet email ou nom d'utilisateur est déjà enregistré.";
         } else {
-            $stmt = $conn->prepare("INSERT INTO users (email, password, role) VALUES (:email, :password, :role)");
+            $stmt = $conn->prepare("INSERT INTO users (username, email, password_hash) 
+                                    VALUES (:username, :email, :password)");
+            $stmt->bindParam(':username', $username);
             $stmt->bindParam(':email', $email);
             $stmt->bindParam(':password', $hashed_password);
-            $stmt->bindParam(':role', $role);
-
-            $role = 'user';
 
             if ($stmt->execute()) {
-                $user_id = $conn->lastInsertId();
-
-                $stmt = $conn->prepare("INSERT INTO user_details (user_id, first_name, last_name, phone_number) 
-                                        VALUES (:user_id, :first_name, :last_name, :phone_number)");
-                $stmt->bindParam(':user_id', $user_id);
-                $stmt->bindParam(':first_name', $first_name);
-                $stmt->bindParam(':last_name', $last_name);
-                $stmt->bindParam(':phone_number', $phone_number);
-
-                if ($stmt->execute()) {
-                    header("Location: login.php");
-                    exit();
-                } else {
-                    $error_message = "Une erreur est survenue lors de l'inscription des détails de l'utilisateur.";
-                }
+                header("Location: login.php");
+                exit();
             } else {
-                $error_message = "Une erreur est survenue lors de l'inscription.";
+                $error_message = "Un problème est survenu lors de l'inscription.";
             }
         }
     }
@@ -85,33 +70,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <header>Sign Up</header>
                 </div>
                 <form action="" method="POST">
-    
-    
-    <div class="input-box">
-        <input type="text" name="email" class="input-field" placeholder="Email" required>
-        <i class="bx bx-envelope"></i>
-    </div>
-    <div class="input-box">
-        <input type="text" name="phone_number" class="input-field" placeholder="Phone Number" required>
-        <i class="bx bx-phone"></i>
-    </div>
-    <div class="input-box">
-        <input type="password" name="password" class="input-field" placeholder="Password" required>
-        <i class="bx bx-lock-alt"></i>
-    </div>
-    <div class="input-box">
-        <input type="password" name="confirm_password" class="input-field" placeholder="Confirm Password" required>
-        <i class="bx bx-lock-alt"></i>
-    </div>
-    <div class="input-box">
-        <input type="submit" class="submit" value="Register">
-    </div>
-</form>
-
-<?php if (!empty($error_message)) : ?>
-    <p style="color: red;"><?php echo $error_message; ?></p>
-<?php endif; ?>
-
+                    <div class="input-box">
+                        <input type="text" name="username" class="input-field" placeholder="Username" required>
+                        <i class="bx bx-user"></i>
+                    </div>
+                    <div class="input-box">
+                        <input type="text" name="email" class="input-field" placeholder="Email" required>
+                        <i class="bx bx-envelope"></i>
+                    </div>
+                    <div class="input-box">
+                        <input type="password" name="password" class="input-field" placeholder="Password" required>
+                        <i class="bx bx-lock-alt"></i>
+                    </div>
+                    <div class="input-box">
+                        <input type="password" name="confirm_password" class="input-field"
+                            placeholder="Confirm Password" required>
+                        <i class="bx bx-lock-alt"></i>
+                    </div>
+                    <div class="input-box">
+                        <input type="submit" class="submit" value="Register">
+                    </div>
+                </form>
             </div>
         </div>
     </div>
