@@ -84,36 +84,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <span>Have an account? <a href="login.php">Login</a></span>
                     <header>Sign Up</header>
                 </div>
-                <div class="two-forms">
-                    <div class="input-box">
-                        <input type="text" class="input-field" placeholder="Firstname">
-                        <i class="bx bx-user"></i>
-                    </div>
-                    <div class="input-box">
-                        <input type="text" class="input-field" placeholder="Lastname">
-                        <i class="bx bx-user"></i>
-                    </div>
-                </div>
-                <div class="input-box">
-                    <input type="text" class="input-field" placeholder="Email">
-                    <i class="bx bx-envelope"></i>
-                </div>
-                <div class="input-box">
-                    <input type="password" class="input-field" placeholder="Password">
-                    <i class="bx bx-lock-alt"></i>
-                </div>
-                <div class="input-box">
-                    <input type="submit" class="submit" value="Register">
-                </div>
-                <div class="two-col">
-                    <div class="one">
-                        <input type="checkbox" id="register-check">
-                        <label for="register-check"> Remember Me</label>
-                    </div>
-                    <div class="two">
-                        <label><a href="#">Terms & conditions</a></label>
-                    </div>
-                </div>
+                <form action="" method="POST">
+    
+    
+    <div class="input-box">
+        <input type="text" name="email" class="input-field" placeholder="Email" required>
+        <i class="bx bx-envelope"></i>
+    </div>
+    <div class="input-box">
+        <input type="text" name="phone_number" class="input-field" placeholder="Phone Number" required>
+        <i class="bx bx-phone"></i>
+    </div>
+    <div class="input-box">
+        <input type="password" name="password" class="input-field" placeholder="Password" required>
+        <i class="bx bx-lock-alt"></i>
+    </div>
+    <div class="input-box">
+        <input type="password" name="confirm_password" class="input-field" placeholder="Confirm Password" required>
+        <i class="bx bx-lock-alt"></i>
+    </div>
+    <div class="input-box">
+        <input type="submit" class="submit" value="Register">
+    </div>
+</form>
+
+<?php if (!empty($error_message)) : ?>
+    <p style="color: red;"><?php echo $error_message; ?></p>
+<?php endif; ?>
+
             </div>
         </div>
     </div>
