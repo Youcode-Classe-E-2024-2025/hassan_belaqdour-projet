@@ -1,52 +1,35 @@
 <?php
-session_start();
+require_once 'database.php';
 
-$host = 'localhost';
-$dbname = 'gestion_projet';
-$username = 'root';
-$password = '';
+class Signup
+{
+    private $conn;
 
-try {
-    $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
-}
+    public function __construct()
+    {
+        $db = new Database();
+        $this->conn = $db->getConnection();
+    }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $confirm_password = $_POST['confirm_password'];
-
-    if ($password !== $confirm_password) {
-        $error_message = "Les mots de passe ne correspondent pas.";
-    } else {
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-        $stmt = $conn->prepare("SELECT * FROM users WHERE email = :email OR username = :username");
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':username', $username);
-        $stmt->execute();
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($user) {
-            $error_message = "cet emai exist deja !!!!!";
-        } else {
-            $stmt = $conn->prepare("INSERT INTO users (username, email, password_hash) 
-                                    VALUES (:username, :email, :password)");
-            $stmt->bindParam(':username', $username);
+    public function registerUser($name, $email, $password)
+    {
+        try {
+            $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+            $stmt = $this->conn->prepare("INSERT INTO users (name, email, password) VALUES (:name, :email, :password)");
+            $stmt->bindParam(':name', $name);
             $stmt->bindParam(':email', $email);
-            $stmt->bindParam(':password', $hashed_password);
-
-            if ($stmt->execute()) {
-                header("Location: login.php");
-                exit();
-            } else {
-                $error_message = "probleme de connection";
-            }
+            $stmt->bindParam(':password', $hashedPassword);
+            $stmt->execute();
+            echo "Inscription réussie !";
+        } catch (PDOException $e) {
+            echo "Erreur : " . $e->getMessage();
         }
     }
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $signup = new Signup();
+    $signup->registerUser($_POST['name'], $_POST['email'], $_POST['password']);
 }
 ?>
 <!DOCTYPE html>
