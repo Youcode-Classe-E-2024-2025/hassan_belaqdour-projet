@@ -12,7 +12,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-if (!isset($_SESSION['email']) || $_SESSION['role'] != 'Chef') {
+if (!isset($_SESSION['role']) || $_SESSION['role'] != 'manager') {
     header("Location: login.php");
     exit();
 }

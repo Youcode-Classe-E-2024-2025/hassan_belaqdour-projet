@@ -1,49 +1,53 @@
 <?php
-session_start();
+require_once '../config/database.php';
+session_start(); 
+class Login
+{
+    private $conn;
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "gestion_projet";
+    public function __construct()
+    {
+        $db = new Database();
+        $this->conn = $db->getConnection();
+    }
 
-$conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    public function authenticateUser($email, $password)
+    {
+        try {
+            $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+
+            $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = :email");
+            $stmt->bindParam(':email', $email);
+            $stmt->execute();
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user && password_verify($password, $user['password'])) {
+                session_regenerate_id(true);  
+                
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['role'] = $user['role'];
+
+                echo $user['role'];
+                if ($user['role'] === 'manager') {
+                    header("Location: dashboard.php");
+                } else {
+                    header("Location: member_dashboard.php");
+                }
+                exit;  
+            } else {
+                echo "Identifiants incorrects.";
+            }
+        } catch (PDOException $e) {
+            error_log("Erreur de connexion : " . $e->getMessage());
+        }
+    }
 }
 
-$error = "";
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-
-    $sql = "SELECT * FROM users WHERE email = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        $user = $result->fetch_assoc();
-
-        if (password_verify($password, $user['password_hash'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['email'] = $user['email'];
-            $_SESSION['role'] = $user['role'];
-
-            if ($user['role'] == 'Chef') {
-                header("Location: dashboard.php");
-                exit();
-            } else {
-                header("Location: member_dashboard.php");
-                exit();
-            }
-        } else {
-            $error = "code non correct";
-        }
-    } else {
-        $error = "l'email n'exist pas a la base de donnes";
-    }
+    $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
+    $login = new Login();
+    $login->authenticateUser($email, $password);
 }
 ?>
 
