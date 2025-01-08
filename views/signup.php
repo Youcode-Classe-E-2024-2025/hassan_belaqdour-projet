@@ -11,27 +11,53 @@ class Signup
         $this->conn = $db->getConnection();
     }
 
-    public function registerUser($name, $email, $password)
+    public function registerUser($name, $email, $password, $confirm_password)
     {
+       
+        if (empty($name) || empty($email) || empty($password) || empty($confirm_password)) {
+            echo "remplir tout les champs";
+            return;
+        }
+
+        if ($password !== $confirm_password) {
+            echo "les deux mots de pass ne sont pas correspendants";
+            return;
+        }
+
         try {
+
             $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
             $stmt = $this->conn->prepare("INSERT INTO users (name, email, password) VALUES (:name, :email, :password)");
             $stmt->bindParam(':name', $name);
             $stmt->bindParam(':email', $email);
             $stmt->bindParam(':password', $hashedPassword);
             $stmt->execute();
-            echo "Inscription réussie !";
-        } catch (PDOException $e) {
-            echo "Erreur : " . $e->getMessage();
+        } 
+        
+        catch(PDOException $e) {
+            
         }
     }
 }
 
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
     $signup = new Signup();
-    $signup->registerUser($_POST['name'], $_POST['email'], $_POST['password']);
+
+    $signup->registerUser(
+        $_POST['username'],
+        $_POST['email'],
+        $_POST['password'],
+        $_POST['confirm_password']
+    );
+
+
+
 }
+
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
