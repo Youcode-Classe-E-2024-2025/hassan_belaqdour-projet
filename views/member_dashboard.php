@@ -12,7 +12,7 @@ class MemberDashboard
         $this->conn = $db->getConnection();
     }
 
-    // Récupérer les tâches assignées à un membre connecté
+
     public function getMemberTasks($user_id)
     {
         $stmt = $this->conn->prepare("
@@ -26,7 +26,7 @@ class MemberDashboard
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Mettre à jour le statut d'une tâche
+   
     public function updateTaskStatus($task_id, $new_status)
     {
         $stmt = $this->conn->prepare("
@@ -40,7 +40,7 @@ class MemberDashboard
     }
 }
 
-// Vérification de la connexion utilisateur
+
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit();
@@ -49,7 +49,7 @@ if (!isset($_SESSION['user_id'])) {
 $dashboard = new MemberDashboard();
 $user_id = $_SESSION['user_id'];
 
-// Mise à jour du statut d'une tâche si le formulaire est soumis
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['task_id'], $_POST['status'])) {
     $task_id = $_POST['task_id'];
     $new_status = $_POST['status'];
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['task_id'], $_POST['st
     }
 }
 
-// Récupération des tâches du membre
+
 $tasks = $dashboard->getMemberTasks($user_id);
 ?>
 
@@ -78,7 +78,7 @@ $tasks = $dashboard->getMemberTasks($user_id);
     <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
         <h1 class="text-3xl font-bold mb-4">Tableau de Bord - Membre</h1>
 
-        <!-- Tableau des tâches -->
+        
         <table class="table-auto w-full border-collapse border border-gray-300">
             <thead>
                 <tr class="bg-gray-200">
@@ -100,8 +100,8 @@ $tasks = $dashboard->getMemberTasks($user_id);
                                     <option value="DOING" <?= $task['status'] == 'DOING' ? 'selected' : '' ?>>DOING</option>
                                     <option value="DONE" <?= $task['status'] == 'DONE' ? 'selected' : '' ?>>DONE</option>
                                 </select>
-                                <button type="submit" class="bg-blue-500 text-white px-4 py-2 mt-2 rounded">Mettre à
-                                    jour</button>
+                                <button type="submit" class="bg-blue-500 text-white px-4 py-2 mt-2 rounded">mise a
+                                    jour du status</button>
                             </form>
                         </td>
                     </tr>

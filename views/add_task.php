@@ -62,37 +62,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
-<body class="bg-gray-100 p-10">
-    <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md">
-        <h1 class="text-2xl font-bold mb-5">Ajouter une Tâche</h1>
-
-        <form method="POST">
-            <label class="block mb-2">Titre de la Tâche :</label>
-            <input type="text" name="title" required class="p-2 border rounded w-full mb-4">
-
-            <label class="block mb-2">Description :</label>
-            <textarea name="description" required class="p-2 border rounded w-full mb-4"></textarea>
-
-            <label class="block mb-2">Statut :</label>
-            <select name="status" class="p-2 border rounded w-full mb-4">
-                <option value="TODO">TODO</option>
-                <option value="DOING">DOING</option>
-                <option value="DONE">DONE</option>
-            </select>
-
-            <label class="block mb-2">Catégorie :</label>
-            <input type="number" name="category_id" required class="p-2 border rounded w-full mb-4">
-
-            <label class="block mb-2">Tag :</label>
-            <input type="number" name="tag_id" required class="p-2 border rounded w-full mb-4">
-
-            <label class="block mb-2">ID du Projet :</label>
-            <input type="number" name="project_id" required class="p-2 border rounded w-full mb-4">
-
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Ajouter la Tâche</button>
-            <a href="../views/index.php" class="ml-4 text-blue-600">Retour</a>
-        </form>
-    </div>
-</body>
-
 </html>

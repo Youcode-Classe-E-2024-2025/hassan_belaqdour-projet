@@ -23,7 +23,6 @@ CREATE TABLE IF NOT EXISTS project (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT,
-    isPublic BOOLEAN DEFAULT FALSE,
     manager_id INT NOT NULL,
     FOREIGN KEY (manager_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -58,63 +57,46 @@ CREATE TABLE IF NOT EXISTS project_assignment (
     FOREIGN KEY (users_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-INSERT INTO users (name, email, password, role, isLogged) VALUES
-('Ibrahim Nidam', 'a@e.com', '$2a$12$CaK1h7hZOPH8lHlrzfWcG.9GKNeQvFzBWkM5oELpFgWJqa0ZyCTOa', 'manager', FALSE),
-('Ali Rachid', 'b@e.com', '$2a$12$22jwn/Pb.vCcrFbOe/qgmOtJAGLTE1fcL66VbkFnjn.gffgrB2kX6', 'member', FALSE),
-('Sara Elham', 'c@e.com', '$2a$12$22jwn/Pb.vCcrFbOe/qgmOtJAGLTE1fcL66VbkFnjn.gffgrB2kX6', 'member', FALSE),
-('Omar Haddad', 'd@e.com', '$2a$12$22jwn/Pb.vCcrFbOe/qgmOtJAGLTE1fcL66VbkFnjn.gffgrB2kX6', 'member', FALSE),
-('Lina Amina', 'e@e.com', '$2a$12$22jwn/Pb.vCcrFbOe/qgmOtJAGLTE1fcL66VbkFnjn.gffgrB2kX6', 'member', FALSE);
 
-INSERT INTO category (name) VALUES
-('Development'),
-('Design'),
-('Testing'),
-('Documentation'),
-('Deployment');
+---------------------------------------- < exemple of database a inseret > -------------------------------------------------------
 
-INSERT INTO tag (name) VALUES
-('Urgent'),
-('Bug'),
-('Feature'),
-('Improvement'),
-('Research');
 
-INSERT INTO project (name, description, isPublic, manager_id, completion_percentage) VALUES
-('Kanban Board Project', 'A board to manage tasks in columns', TRUE, 1, 0),
-('E-commerce App', 'An application to handle online sales and checkouts', FALSE, 1, 0),
-('Mobile Game', 'A fun casual game for iOS and Android platforms', TRUE, 1, 0),
-('Chat Application', 'A real-time chat app with notifications', FALSE, 1, 0);
+-- -- Insérer des utilisateurs (managers et membres)
+-- INSERT INTO users (name, email, password, role) VALUES
+-- ('Alice Dupont', 'alice@exemple.com', 'password123', 'manager'),
+-- ('Bob Martin', 'bob@exemple.com', 'password123', 'member'),
+-- ('Charlie Lemoine', 'charlie@exemple.com', 'password123', 'member'),
+-- ('David Girard', 'david@exemple.com', 'password123', 'member');
 
-INSERT INTO task (title, description, status, tag_id, category_id, project_id) VALUES
-('Set Up Repository', 'Initialize Git repository and set up project structure', '2025-01-02', '2025-01-05', 'TODO', 3, 1, 1),
-('Define Workflow', 'Establish Kanban workflow stages and policies', '2025-01-06', '2025-01-10', 'TODO', 4, 2, 1),
-('Design UI Mockups', 'Create initial UI mockups for the Kanban board', '2025-01-11', '2025-01-15', 'TODO', 3, 2, 1),
-('Implement Authentication', 'Develop user authentication system', '2025-01-16', '2025-01-20', 'TODO', 1, 1, 1),
-('Deploy Initial Version', 'Deploy the initial version of the Kanban board application', '2025-01-21', '2025-01-25', 'TODO', 5, 5, 1);
+-- -- Insérer des catégories
+-- INSERT INTO category (name) VALUES
+-- ('Développement'),
+-- ('Design'),
+-- ('Marketing');
 
-INSERT INTO task (title, description, status, tag_id, category_id, project_id) VALUES
-('DB Schema Design', 'Design database schema for products and users', '2025-02-01', '2025-02-05', 'TODO', 3, 1, 2),
-('Payment System', 'Integrate payment gateway system', '2025-02-06', '2025-02-10', 'TODO', 1, 1, 2),
-('Product Catalog', 'Create product listing interface', '2025-02-11', '2025-02-15', 'TODO', 3, 2, 2),
-('User Auth', 'Implement user authentication', '2025-02-16', '2025-02-20', 'TODO', 1, 1, 2),
-('Test Payment', 'Test payment system integration', '2025-02-21', '2025-02-25', 'TODO', 2, 3, 2);
+-- -- Insérer des tags
+-- INSERT INTO tag (name) VALUES
+-- ('Urgent'),
+-- ('Important'),
+-- ('Low Priority'),
+-- ('High Priority');
 
-INSERT INTO ask (title, description, startDate, endDate, status, tag_id, category_id, project_id) VALUES
-('Game Design Doc', 'Create game design document', '2025-03-01', '2025-03-05', 'TODO', 5, 4, 3),
-('Character Art', 'Design main character sprites', '2025-03-06', '2025-03-10', 'TODO', 3, 2, 3),
-('Game Mechanics', 'Implement core game mechanics', '2025-03-11', '2025-03-15', 'TODO', 3, 1, 3),
-('Sound Effects', 'Create and integrate SFX', '2025-03-16', '2025-03-20', 'TODO', 4, 2, 3),
-('Beta Testing', 'Conduct beta testing phase', '2025-03-21', '2025-03-25', 'TODO', 2, 3, 3);
+-- -- Insérer des projets
+-- INSERT INTO project (name, description, manager_id) VALUES
+-- ('Projet A', 'Un projet de développement d\'une application web.', 1),
+-- ('Projet B', 'Création d une nouvelle plateforme marketing.', 1),
+-- ('Projet C', 'Refonte du site internet de l\'entreprise.', 2);
 
-INSERT INTO task (title, description, startDate, endDate, status, tag_id, category_id, project_id) VALUES
-('WebSocket Setup', 'Set up WebSocket server', '2025-04-01', '2025-04-05', 'TODO', 3, 1, 4),
-('Chat UI Design', 'Design chat interface', '2025-04-06', '2025-04-10', 'TODO', 4, 2, 4),
-('Message System', 'Implement messaging system', '2025-04-11', '2025-04-15', 'TODO', 3, 1, 4),
-('Security Check', 'Perform security audit', '2025-04-16', '2025-04-20', 'TODO', 1, 3, 4),
-('API Documentation', 'Document chat API endpoints', '2025-04-21', '2025-04-25', 'TODO', 5, 4, 4);
+-- -- Insérer des tâches
+-- INSERT INTO task (title, description, createDate, status, tag_id, category_id, project_id) VALUES
+-- ('Développement de la base de données', 'Créer la base de données pour le projet A.', '2025-01-01', 'TODO', 1, 1, 1),
+-- ('Création des maquettes', 'Concevoir les maquettes pour le projet B.', '2025-01-02', 'DOING', 2, 2, 2),
+-- ('Campagne marketing', 'Lancer la campagne marketing pour le projet C.', '2025-01-03', 'TODO', 3, 3, 3),
+-- ('Test des fonctionnalités', 'Tester les fonctionnalités développées pour le projet A.', '2025-01-04', 'DONE', 4, 1, 1);
 
-INSERT INTO task_assignment (task_id, users_id) VALUES
-(1, 2), (2, 3), (3, 4), (4, 5), (5, 2),
-(6, 2), (7, 3), (8, 4), (9, 5), (10, 2),
-(11, 3), (12, 4), (13, 5), (14, 2), (15, 3),
-(16, 4), (17, 5), (18, 2), (19, 3), (20, 4);
+-- -- Assigner des tâches aux utilisateurs
+-- INSERT INTO task_assignment (task_id, users_id) VALUES
+-- (1, 2),  -- Bob Martin assigne à la tâche "Développement de la base de données"
+-- (2, 3),  -- Charlie Lemoine assigne à la tâche "Création des maquettes"
+-- (3, 4),  -- David Girard assigne à la tâche "Campagne marketing"
+-- (4, 2);  -- Bob Martin assigne à la tâche "Test des fonctionnalités"

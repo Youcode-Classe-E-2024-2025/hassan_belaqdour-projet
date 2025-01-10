@@ -1,12 +1,17 @@
 <?php
 session_start();
 
-// Vérification si l'utilisateur est bien un manager
+
 if (!isset($_SESSION['role']) || $_SESSION['role'] != 'manager') {
     header("Location: login.php");
     exit();
+
 }
+
+
 $email = $_SESSION['email'];
+
+
 ?>
 
 <!DOCTYPE html>
@@ -20,7 +25,7 @@ $email = $_SESSION['email'];
     <script src="../script/script.js" defer></script>
 </head>
 <body class="bg-gray-900 text-gray-100 overflow-x-clip">
-    <!-- Header Section -->
+    
     <header class="p-4 flex justify-between items-center">
         <div class="flex items-center gap-2">
             <button id="menuButton" class="text-gray-100 text-3xl lg:hidden hover:text-gray-400" aria-label="Open Menu">
@@ -39,7 +44,7 @@ $email = $_SESSION['email'];
     </header>
 
     <div class="flex p-3 gap-4">
-        <!-- Sidebar Section -->
+      
         <aside id="sidebar" class="w-42 hidden lg:block rounded-lg bg-gray-800 p-2 py-5 fixed lg:relative lg:translate-x-0 transform -translate-x-full transition-transform duration-200 ease-in-out">
             <nav class="space-y-4">
                 <a href="#" class="menu-link flex items-center space-x-3 text-gray-300 hover:bg-gray-700 p-3 rounded-md" data-page="statistique">
@@ -54,7 +59,7 @@ $email = $_SESSION['email'];
                     <i class="bx bx-wallet text-teal-400"></i>
                     <span>Add Tasks</span>
                 </a>
-                <a href="#" class="menu-link flex items-center space-x-3 text-gray-300 hover:bg-gray-700 p-3 rounded-md" data-page="assign_task">
+                <a href="assign_task.php" class="menu-link flex items-center space-x-3 text-gray-300 hover:bg-gray-700 p-3 rounded-md" data-page="assign_task">
                     <i class="bx bx-user text-teal-400"></i>
                     <span>Assign Task</span>
                 </a>
@@ -65,10 +70,16 @@ $email = $_SESSION['email'];
             </nav>
         </aside>
 
-        <!-- Main Content -->
+     
         <main id="main-content" class="flex-1 bg-gray-900 flex gap-4 flex-col lg:flex-row ml-0 lg:ml-42">
             <section id="content" class="w-full lg:flex-1 p-4 space-y-6 bg-gray-800 flex flex-col rounded-lg">
-                <!-- Le contenu dynamique des pages sera inséré ici -->
+                 
+
+
+
+
+
+
             </section>
         </main>
     </div>
