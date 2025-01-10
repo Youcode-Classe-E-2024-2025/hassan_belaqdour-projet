@@ -23,13 +23,13 @@ class Login
 
             if ($user && password_verify($password, $user['password'])) {
                 session_regenerate_id(true);  
-                
+                $_SESSION['email'] = $user['email'];
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['role'] = $user['role'];
 
                 echo $user['role'];
                 if ($user['role'] === 'manager') {
-                    header("Location: dashboard.php");
+                    header("Location: manager_dashboard.php");
                 } else {
                     header("Location: member_dashboard.php");
                 }

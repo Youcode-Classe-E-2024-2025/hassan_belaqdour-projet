@@ -1,111 +1,118 @@
 <?php
 session_start();
+require_once '../config/database.php';
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'Chef') {
-    header("Location: login.php");
-    exit();
-}
+class AssignTask
+{
+    private $conn;
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "gestion_projet";
+    public function __construct()
+    {
+        $db = new Database();
+        $this->conn = $db->getConnection();
+    }
 
-$conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+    // Méthode pour assigner une tâche à un utilisateur
+    public function assignTask($task_id, $user_id)
+    {
+        // Vérifier si la tâche est déjà assignée à l'utilisateur
+        $checkStmt = $this->conn->prepare("
+            SELECT COUNT(*) FROM task_assignment WHERE task_id = :task_id AND users_id = :user_id
+        ");
+        $checkStmt->bindParam(':task_id', $task_id);
+        $checkStmt->bindParam(':user_id', $user_id);
+        $checkStmt->execute();
+        $count = $checkStmt->fetchColumn();
 
-$query = "SELECT task_id, task_title, task_description, due_date FROM tasks WHERE assigned_to IS NULL";
-$tasks_result = $conn->query($query);
-
-$members_query = "SELECT user_id, username FROM users WHERE role = 'member'";
-$members_result = $conn->query($members_query);
-
-$error_message = "";
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $task_id = $_POST['task_id'];
-    $assigned_to = $_POST['assigned_to'];
-
-    if (empty($task_id) || empty($assigned_to)) {
-        $error_message = "Veuillez sélectionner une tâche et un membre.";
-    } else {
-        $query = "UPDATE tasks SET assigned_to = ? WHERE task_id = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("ii", $assigned_to, $task_id);
-
-        if ($stmt->execute()) {
-            header("Location: dashboard.php");
-            exit();
-        } else {
-            $error_message = "Erreur lors de l'assignation de la tâche.";
+        // Si la tâche est déjà assignée, ne pas insérer et retourner un message d'erreur
+        if ($count > 0) {
+            return false; // Tâche déjà assignée à cet utilisateur
         }
 
-        $stmt->close();
+        // Sinon, procéder à l'insertion
+        $stmt = $this->conn->prepare("
+            INSERT INTO task_assignment (task_id, users_id) 
+            VALUES (:task_id, :user_id)
+        ");
+        $stmt->bindParam(':task_id', $task_id);
+        $stmt->bindParam(':user_id', $user_id);
+        return $stmt->execute();
+    }
+
+    // Récupérer la liste des utilisateurs
+    public function getUsers()
+    {
+        $stmt = $this->conn->query("SELECT id, name FROM users");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Récupérer la liste des tâches
+    public function getTasks()
+    {
+        $stmt = $this->conn->query("SELECT id, title FROM task");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
 
-$conn->close();
+$assign = new AssignTask();
+$users = $assign->getUsers();
+$tasks = $assign->getTasks();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $task_id = $_POST['task_id'];
+    $user_id = $_POST['user_id'];
+
+    // Vérifier si l'assignation a réussi
+    if ($assign->assignTask($task_id, $user_id)) {
+        echo "<p class='text-green-500'>Tâche assignée avec succès!</p>";
+        header("Location: ../views/statistique.php");
+        exit();
+    } else {
+        echo "<p class='text-red-500'>Cette tâche est déjà assignée à cet utilisateur.</p>";
+    }
+}
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assigner une tâche</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.3/dist/tailwind.min.css" rel="stylesheet">
+    <title>Assigner une Tâche</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-gray-100 p-10">
+    <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md">
+        <h1 class="text-2xl font-bold mb-5">Assigner une Tâche</h1>
 
-    <div class="container mx-auto p-6">
-        <div class="bg-white shadow-md rounded-lg p-6">
-            <h1 class="text-3xl font-bold text-gray-800 mb-4">Assigner une tâche</h1>
+        <form method="POST" class="space-y-4">
+            <!-- Sélection de la tâche -->
+            <label class="block font-semibold">Tâche :</label>
+            <select name="task_id" required class="p-2 border rounded w-full">
+                <?php foreach ($tasks as $task): ?>
+                    <option value="<?= $task['id'] ?>"><?= htmlspecialchars($task['title']) ?></option>
+                <?php endforeach; ?>
+            </select>
 
-            <?php if (!empty($error_message)): ?>
-                <div class="bg-red-500 text-white p-4 rounded-lg mb-4">
-                    <p><?php echo $error_message; ?></p>
-                </div>
-            <?php endif; ?>
+            <!-- Sélection de l'utilisateur -->
+            <label class="block font-semibold">Utilisateur :</label>
+            <select name="user_id" required class="p-2 border rounded w-full">
+                <?php foreach ($users as $user): ?>
+                    <option value="<?= $user['id'] ?>">
+                        <?= htmlspecialchars($user['name']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
 
-            <form method="POST" action="assign_task.php">
-                <div class="mb-4">
-                    <label for="task_id" class="block text-gray-700">Sélectionner une tâche</label>
-                    <select id="task_id" name="task_id" class="w-full px-4 py-2 border rounded-md" required>
-                        <option value="">Sélectionner une tâche</option>
-                        <?php while ($task = $tasks_result->fetch_assoc()): ?>
-                            <option value="<?php echo $task['task_id']; ?>">
-                                <?php echo htmlspecialchars($task['task_title']); ?> - Due:
-                                <?php echo date('M d, Y', strtotime($task['due_date'])); ?>
-                            </option>
-                        <?php endwhile; ?>
-                    </select>
-                </div>
-
-                <div class="mb-4">
-                    <label for="assigned_to" class="block text-gray-700">Assigner à un membre</label>
-                    <select id="assigned_to" name="assigned_to" class="w-full px-4 py-2 border rounded-md" required>
-                        <option value="">Sélectionner un membre</option>
-                        <?php while ($member = $members_result->fetch_assoc()): ?>
-                            <option value="<?php echo $member['user_id']; ?>">
-                                <?php echo htmlspecialchars($member['username']); ?>
-                            </option>
-                        <?php endwhile; ?>
-                    </select>
-                </div>
-
-                <div class="mb-4">
-                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700">Assigner
-                        la tâche</button>
-                </div>
-            </form>
-
-        </div>
+            <!-- Bouton de soumission -->
+            <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-700">
+                Assigner la Tâche
+            </button>
+            <a href="../views/index.php" class="block text-center mt-4 text-blue-600">Retour</a>
+        </form>
     </div>
-
 </body>
 
 </html>
